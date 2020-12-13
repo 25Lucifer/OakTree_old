@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tree.blog.mapper.CategoryMapper">
+
+    <!--
+        Category saveCategory(Category category);
+    -->
+    <insert id="saveCategory" parameterType="com.tree.blog.po.Category">
+        INSERT INTO category SET id=#{id},name=#{name}
+    </insert>
+
+    <!--
+        Category getCategory(Long id);
+    -->
+    <select id="getCategory" resultType="com.tree.blog.po.Category">
+        SELECT * FROM category WHERE id=#{id}
+    </select>
+
+    <select id="getCategoryByName" resultType="com.tree.blog.po.Category">
+        SELECT * FROM category WHERE name=#{name}
+    </select>
+
+
+    <!--
+        List<Category> listCategory();
+    -->
+    <select id="listCategory" resultType="com.tree.blog.po.Category">
+        SELECT * FROM category
+    </select>
+
+    <!--    List<Category> listCategoryByUsedTimes();-->
+    <select id="listCategoryByUsedTimes" resultMap="CategoryWithCount">
+        SELECT b.cid AS id,c.`name` AS name,COUNT(cid) AS count FROM blog b,category c WHERE b.cid=c.id GROUP BY cid ORDER BY COUNT(cid) DESC
+    </select>
+
+    <!--
+        Category updateCategory(Long id,Category category);
+    -->
+    <update id="updateCategory">
+        UPDATE category SET name=#{name} WHERE id=#{id}
+    </update>
+
+    <!--
+        void deleteCategory(Long id);
+    -->
+    <delete id="deleteCategory">
+        DELETE FROM category WHERE id=#{id}
+    </delete>
+
+    <resultMap id="CategoryWithCount" type="com.tree.blog.po.Category">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="blogCount" column="count"/>
+    </resultMap>
+
+</mapper>

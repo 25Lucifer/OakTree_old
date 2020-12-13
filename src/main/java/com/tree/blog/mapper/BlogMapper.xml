@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tree.blog.mapper.BlogMapper">
+
+<!--    Blog getBlog(Long id);-->
+    <select id="getBlog" resultMap="BlogWithUserMap">
+        SELECT u.id AS uid,u.nickname AS nickname,u.avatar AS avatar,b.*,c.name AS cname,c.id AS cid
+        FROM blog b LEFT JOIN category c ON b.cid=c.id LEFT JOIN user u ON b.uid=u.id
+        WHERE b.id=#{id}
+    </select>
+
+<!--    List<Blog> listRecommendBlog();-->
+    <select id="listRecommendBlog" resultMap="BlogMap">
+        SELECT b.*,c.name AS cname,c.id AS cid FROM blog b LEFT JOIN category c ON b.cid=c.id
+        WHERE b.recommend=true ORDER BY b.updatetime DESC
+    </select>
+
+<!--    List<String> findGroupYear();-->
+    <select id="findGroupYear" resultType="java.lang.String">
+        SELECT DATE_FORMAT(b.updatetime,'%Y') as year from blog b GROUP BY year ORDER BY year DESC
+    </select>
+
+<!--    List<Blog> findBlogByYear(String year);-->
+    <select id="findBlogByYear" resultType="com.tree.blog.po.Blog">
+        SELECT * FROM blog b WHERE DATE_FORMAT(b.updatetime,'%Y') = #{year}
+    </select>
+
+    <!--    Blog getBlogByTitle(String title);-->
+    <select id="getBlogByTitle" resultType="com.tree.blog.po.Blog">
+        SELECT * FROM blog WHERE title=#{title}
+    </select>
+
+<!--    Long countBlog();-->
+    <select id="countBlog" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM blog
+    </select>
+<!--    List<Blog> listBlogByCategoryId(Long cid);-->
+
+    <select id="listBlogByCategoryId" resultMap="BlogWithUserMap">
+        SELECT u.id AS uid,u.nickname AS nickname,u.avatar AS avatar,b.*,c.name AS cname,c.id AS cid
+        FROM blog b LEFT JOIN category c ON b.cid=c.id LEFT JOIN user u ON b.uid=u.id
+        WHERE 1=1
+        <if test="categoryId!=null">
+            AND c.id=#{cid}
+        </if>
+    </select>
+
+    <select id="listBlogByTagId" resultMap="BlogWithUserMap">
+
+        SELECT u.id AS uid,u.nickname AS nickname,u.avatar AS avatar,b.*,c.name AS cname,c.id AS cid
+        FROM blog b LEFT JOIN category c ON b.cid=c.id LEFT JOIN user u ON b.uid=u.id
+        WHERE b.id IN (SELECT bid FROM blog_tag WHERE tid=#{tid})
+    </select>
+<!--    List<Blog> getBlogByCondition(String title,String type,boolean recommend);-->
+    <select id="getBlogByCondition" resultMap="BlogWithUserMap" parameterType="com.tree.blog.vo.BlogQuery">
+        SELECT u.id AS uid,u.nickname AS nickname,u.avatar AS avatar,b.*,c.name AS cname,c.id AS cid
+        FROM blog b LEFT JOIN category c ON b.cid=c.id LEFT JOIN user u ON b.uid=u.id
+        WHERE 1=1
+        <if test="recommend!=null">
+        AND b.recommend=#{recommend}
+        </if>
+        <if test="categoryId!=null">
+        AND c.id=#{categoryId}
+        </if>
+        <if test="title!=null">
+        AND b.title LIKE concat('%',#{title},'%')
+        </if>
+    </select>
+
+<!--    List<Blog> listBlog(Blog blog);-->
+    <select id="listBlog" resultMap="BlogWithUserMap">
+        SELECT u.id AS uid,u.nickname AS nickname,u.avatar AS avatar,b.*,c.name AS cname,c.id AS cid
+        FROM blog b LEFT JOIN category c ON b.cid=c.id LEFT JOIN user u ON b.uid=u.id
+    </select>
+
+<!--    List<Blog> searchMappingBlog(String query);-->
+    <select id="searchMappingBlog" resultMap="BlogWithUserMap">
+        SELECT u.id AS uid,u.nickname AS nickname,u.avatar AS avatar,b.*,c.name AS cname,c.id AS cid
+        FROM blog b LEFT JOIN category c ON b.cid=c.id LEFT JOIN user u ON b.uid=u.id
+        WHERE b.title LIKE concat('%',#{query},'%') OR b.context LIKE concat('%',#{query},'%')
+    </select>
+
+<!--    List<Tag> listTag(Long bid);-->
+    <select id="listTag" resultType="com.tree.blog.po.Tag">
+        SELECT t.* FROM tag t,blog_tag bt WHERE bt.bid=#{bid} AND t.id=bt.tid
+    </select>
+
+<!--    void saveBlog(Blog blog);-->
+    <insert id="saveBlog" parameterType="com.tree.blog.po.Blog">
+        INSERT INTO blog SET title=#{title},context=#{context},first_pic=#{firstPicture},flag=#{flag}
+        <if test="views!=null">
+        ,views=#{views}
+        </if>
+        ,appreciation=#{appreciation},sharestatement=#{shareStatement},commentabled=#{commentabled},published=#{published},
+        recommend=#{recommend},updatetime=#{updateTime},uid=#{user.id},cid=#{category.id}
+
+    </insert>
+
+
+<!--    void updateViews(Long bid);-->
+    <update id="updateViews">
+        UPDATE blog SET views=views+1 WHERE id=#{bid}
+    </update>
+
+<!--    void updateBlog(Long id,Blog blog);-->
+    <update id="updateBlog" parameterType="com.tree.blog.po.Blog">
+        UPDATE blog SET title=#{title},context=#{context},first_pic=#{firstPicture},flag=#{flag},views=#{views},
+        appreciation=#{appreciation},sharestatement=#{shareStatement},commentabled=#{commentabled},published=#{published},
+        recommend=#{recommend},createtime=#{createTime},updatetime=#{updateTime} WHERE id=#{id}
+    </update>
+<!--    void deleteBlog(Long id);-->
+    <delete id="deleteBlog">
+        DELETE FROM blog WHERE id=#{id}
+    </delete>
+
+
+<!--    void saveBlogTags(Long uid,List<Long> tids);-->
+    <insert id="saveBlogTags">
+        INSERT INTO blog_tag(bid,tid) VALUES
+        <foreach collection="tids" item="tid" separator=",">
+            (#{bid},#{tid})
+        </foreach>
+    </insert>
+
+    <!--    void saveBlogTag(Long bid,Long tid);-->
+    <insert id="saveBlogTag">
+        INSERT INTO blog_tag(bid,tid) VALUES (#{bid},#{tid})
+    </insert>
+
+    <!--    void deleteBlogTag(Long bid,Long tid);-->
+    <delete id="deleteBlogTag">
+        DELETE FROM blog_tag WHERE bid=#{bid} AND tid=#{tid}
+    </delete>
+
+    <resultMap id="BlogMap" type="com.tree.blog.po.Blog">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="context" column="context"/>
+        <result property="firstPicture" column="first_pic"/>
+        <result property="flag" column="flag"/>
+        <result property="views" column="views"/>
+        <result property="appreciation" column="appreciation"/>
+        <result property="shareStatement" column="sharestatement"/>
+        <result property="commentabled" column="commentabled"/>
+        <result property="published" column="published"/>
+        <result property="recommend" column="recommend"/>
+        <result property="createTime" column="createtime"/>
+        <result property="updateTime" column="updatetime"/>
+        <association property="category" javaType="com.tree.blog.po.Category">
+            <id property="id" column="cid"/>
+            <result property="name" column="cname"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="BlogWithUserMap" type="com.tree.blog.po.Blog">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="context" column="context"/>
+        <result property="firstPicture" column="first_pic"/>
+        <result property="flag" column="flag"/>
+        <result property="views" column="views"/>
+        <result property="appreciation" column="appreciation"/>
+        <result property="shareStatement" column="sharestatement"/>
+        <result property="commentabled" column="commentabled"/>
+        <result property="published" column="published"/>
+        <result property="recommend" column="recommend"/>
+        <result property="createTime" column="createtime"/>
+        <result property="updateTime" column="updatetime"/>
+        <result property="description" column="description"/>
+        <association property="category" javaType="com.tree.blog.po.Category">
+            <id property="id" column="cid"/>
+            <result property="name" column="cname"/>
+        </association>
+        <association property="user" javaType="com.tree.blog.po.User">
+            <id property="id" column="uid"/>
+            <result property="nickname" column="nickname"/>
+            <result property="avatar" column="avatar"></result>
+        </association>
+    </resultMap>
+</mapper>

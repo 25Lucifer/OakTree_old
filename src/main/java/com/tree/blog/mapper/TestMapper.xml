@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tree.blog.mapper.TestMapper">
+    <select id="getTest" resultMap="BaseResultMap">
+        SELECT t.*,c.id AS cid FROM test t LEFT JOIN category c ON t.category=c.name WHERE c.name=#{category.name}
+    </select>
+
+
+    <resultMap id="BaseResultMap" type="com.tree.blog.po.Test">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <association property="category" javaType="com.tree.blog.po.Category">
+            <id property="id" column="cid"/>
+            <result property="name" column="category"/>
+        </association>
+    </resultMap>
+
+</mapper>

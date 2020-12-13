@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tree.blog.mapper.CommentMapper">
+
+<!--    List<Comment> listRootCommentByBlogId(Long bid);-->
+    <select id="listRootCommentByBlogId" resultType="com.tree.blog.po.Comment">
+        SELECT * FROM comment WHERE bid=#{bid} AND cid=-1 ORDER BY createtime;
+    </select>
+
+<!--    List<Comment> listCommentByCommentId(Long cid);-->
+    <select id="listCommentByCommentId" resultType="com.tree.blog.po.Comment">
+        SELECT c.*,c1.nickname AS replyNickname FROM comment c LEFT JOIN comment c1 ON c.fid=c1.id WHERE c.cid=#{cid} ORDER BY c.createtime
+    </select>
+
+<!--    void saveComment(Comment comment);-->
+    <insert id="saveComment" parameterType="com.tree.blog.po.Comment">
+        INSERT INTO comment SET nickname=#{nickname},email=#{email},content=#{content},avatar=#{avatar},
+        createtime=#{createTime},bid=#{bid},cid=#{cid},fid=#{fid},admincomment=#{adminComment}
+    </insert>
+
+</mapper>
