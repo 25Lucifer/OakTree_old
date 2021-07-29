@@ -49,22 +49,26 @@
             <div class="three wide column">
                 <div class="ui inverted link list">
                     <div class="item">
-                        <img src="../../static/images/Wechat.jpeg" th:src="@{/images/Wechat.jpeg}" class="ui rounded image" alt="" style="width:100px">
+                        <img src="../static/images/Wechat.jpeg" th:src="@{/images/Wechat.jpeg}" class="ui rounded image" alt="" style="width:100px">
                     </div>
                 </div>
             </div>
             <div class="three wide column">
                 <h4 class="ui inverted header m-text-thin m-text-spaced">最新博客</h4>
-                <div class="ui inverted link list" th:fragment="newBlogList">
-                    <a href="#" class="item">做一个博客</a>
-                    <a href="#" class="item">做一个博客</a>
-                    <a href="#" class="item">做一个博客</a>
+                <div id="newblog-container">
+                    <div class="ui inverted link list" th:fragment="newBlogList">
+                        <a href="#" th:href="@{/blog/{id}(id=${blog.id})}" target="_blank" class="item" th:each="blog : ${newBlogs}" th:text="${blog.title}">做一个博客</a>
+                        <!--/*-->
+                        <a href="#" class="item">做一个博客</a>
+                        <a href="#" class="item">做一个博客</a>
+                        <!--*/-->
+                    </div>
                 </div>
             </div>
             <div class="three wide column">
                 <h4 class="ui inverted header m-text-thin m-text-spaced">Contact me</h4>
                 <div class="ui inverted link list">
-                    <a href="#" class="item">Email:zoew1942spe@live.com</a>
+                    <a href="#" class="item">Email:<span th:text="#{index.email}">845421209@qq.com</span></a>
                     <a href="#" class="item">QQ:845421209</a>
                 </div>
             </div>
@@ -75,7 +79,8 @@
         </div>
         <div>
             <div class="ui inverted section divider"></div>
-            <p class="m-text-thin m-text-spaced m-opacity-mini">Copyright Ⓒ 2020 Tree Designed By Lucifer</p>
+            <a href="https://beian.miit.gov.cn">粤ICP备2021105749号</a>
+            <p class="m-text-thin m-text-spaced m-opacity-mini">Copyright Ⓒ 2021 Tree Designed By Lucifer</p>
         </div>
     </div>
 </footer>
@@ -90,6 +95,9 @@
     <script src="../../static/lib/qrcode/qrcode.min.js" th:src="@{/lib/qrcode/qrcode.min.js}"></script>
     <script src="../../static/lib/waypoints/jquery.waypoints.min.js" th:src="@{/lib/waypoints/jquery.waypoints.min.js}"></script>
     <script src="../../static/lib/editormd/editormd.min.js" th:src="@{/lib/editormd/editormd.min.js}"></script>
+<!--    <script>-->
+<!--        $('#newblog-container').load(/*[[@{/footer/newblog}]]*/"/footer/newblog");-->
+<!--    </script>-->
 </th:block>
 </body>
 </html>

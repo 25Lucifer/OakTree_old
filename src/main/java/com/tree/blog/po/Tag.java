@@ -1,11 +1,12 @@
 package com.tree.blog.po;
 
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 /**
  * @author lucifer
  */
-public class Tag {
+public class Tag implements Serializable {
     private Long id;
 
     @NotBlank(message = "标签名称不可为空")

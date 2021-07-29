@@ -1,12 +1,13 @@
 package com.tree.blog.po;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 /**
  * @author lucifer
  */
-public class Comment {
+public class Comment implements Serializable {
 
     private Long id;
     private String nickname;

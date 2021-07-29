@@ -8,6 +8,15 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  redis:
+    host: 8.135.58.186
+    port: 26379
+    database: 0
+    timeout: 6000
+    jedis:
+      pool:
+        max-active: 1000
+        max-idle: 10
 
 logging:
   level:
@@ -17,6 +26,8 @@ logging:
     path: log/blog-dev.log
 server:
   port: 8081
+
+
 
 #mybatis:
 #  mapper-locations:
