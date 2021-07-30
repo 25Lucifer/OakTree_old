@@ -474,7 +474,7 @@ h5,h6{font-size:1em;}
                                 <img src="https://picsum.photos/id/1011/1000/1000" alt="" th:src="@{${comment.avatar}}">
                             </a>
                             <div class="content">
-                                <a class="author">
+                                <a th:href="@{${comment.website}}" class="author">
                                     <span th:text="${comment.nickname}">Matt</span>
                                     <div class="ui mini basic teal left pointing label m-padded-mini" th:if="${comment.adminComment}">博主</div>
                                 </a>
@@ -587,12 +587,12 @@ h5,h6{font-size:1em;}
                             <input type="text" name="email" placeholder="邮箱" th:value="${session.user} != null ? ${session.user.email}">
                         </div>
                     </div>
-<!--                    <div class="field m-mobile-wide m-margin-bottom-small">-->
-<!--                        <div class="ui left icon input">-->
-<!--                            <i class="quote left icon"></i>-->
-<!--                            <input type="text" name="website" placeholder="个人主页" th:value="${session.user} != null ? ${session.user.website}">-->
-<!--                        </div>-->
-<!--                    </div>-->
+                    <div class="field m-mobile-wide m-margin-bottom-small">
+                        <div class="ui left icon input">
+                            <i class="quote left icon"></i>
+                            <input type="text" name="website" placeholder="个人主页" th:value="${session.user} != null ? ${session.user.website}">
+                        </div>
+                    </div>
                     <div class="field m-mobile-wide m-margin-bottom-small">
                         <button id="commentpost-btn" type="button " class="ui teal button m-mobile-wide"><i class="edit icon"></i>评论</button>
                     </div>
@@ -754,7 +754,7 @@ h5,h6{font-size:1em;}
                     type:'empty',
                     prompt:'请输入正确的邮箱地址'
                 }]
-            }
+            },
 
         }
     });
@@ -769,7 +769,7 @@ h5,h6{font-size:1em;}
     $('#commentpost-btn').click(function () {
         var boo = $('.ui.form').form('validate form');
         if(boo){
-            console.log('校验失败');
+            console.log('校验成功');
             postData();
         } else {
             console.log('校验失败');
@@ -783,7 +783,8 @@ h5,h6{font-size:1em;}
             "fid" : $("[name='comment.fid']").val(),
             "nickname" : $("[name='nickname']").val(),
             "email" : $("[name='email']").val(),
-            "content" : $("[name='content']").val()
+            "content" : $("[name='content']").val(),
+            "website" : $("[name='website']").val()
         },function (responseTxt,statusTxt,xhr) {
             $(window).scrollTo($('#comment-container'),500);
             clearContent();

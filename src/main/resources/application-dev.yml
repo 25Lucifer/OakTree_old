@@ -17,6 +17,9 @@ spring:
       pool:
         max-active: 1000
         max-idle: 10
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
 
 logging:
   level:

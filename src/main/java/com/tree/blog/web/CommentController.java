@@ -23,6 +23,11 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+//    @GetMapping("/redirect/{url}")
+//    public String redirect(){
+//        return
+//    }
+
     @GetMapping("/comments/{blogId}")
     public String comments(@PathVariable("blogId") Long bid, Model model){
         List<Comment> comments = commentService.listCommentByBlogId(bid);

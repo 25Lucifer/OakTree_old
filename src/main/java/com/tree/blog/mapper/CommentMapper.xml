@@ -17,7 +17,7 @@
 <!--    void saveComment(Comment comment);-->
     <insert id="saveComment" parameterType="com.tree.blog.po.Comment">
         INSERT INTO comment SET nickname=#{nickname},email=#{email},content=#{content},avatar=#{avatar},
-        createtime=#{createTime},bid=#{bid},cid=#{cid},fid=#{fid},admincomment=#{adminComment}
+        createtime=#{createTime},bid=#{bid},cid=#{cid},fid=#{fid},admincomment=#{adminComment},website="http://"#{website}
     </insert>
 
 </mapper>

@@ -14,6 +14,7 @@ public class Comment implements Serializable {
     private String email;
     private String content;
     private String avatar;
+    private String website;
     private Date createTime;
 
     private Long bid;
@@ -30,6 +31,14 @@ public class Comment implements Serializable {
     List<Comment> replys;
 
     public Comment() {
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
     public List<Comment> getReplys() {
